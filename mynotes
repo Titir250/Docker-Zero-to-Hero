@@ -1,1 +1,95 @@
-hiiiiii
+ubuntu@ip-10-0-1-212:~$ sudo apt install docker.io -y
+Reading package lists... Done
+Building dependency tree... Done
+Reading state information... Done
+The following additional packages will be installed:
+  bridge-utils containerd dns-root-data dnsmasq-base pigz runc ubuntu-fan
+Suggested packages:
+  ifupdown aufs-tools cgroupfs-mount | cgroup-lite debootstrap docker-buildx docker-compose-v2 docker-doc rinse zfs-fuse | zfsutils
+The following NEW packages will be installed:
+  bridge-utils containerd dns-root-data dnsmasq-base docker.io pigz runc ubuntu-fan
+0 upgraded, 8 newly installed, 0 to remove and 68 not upgraded.
+Need to get 76.0 MB of archives.
+
+
+ubuntu@ip-10-0-1-212:~$ sudo systemctl status docker
+● docker.service - Docker Application Container Engine
+     Loaded: loaded (/usr/lib/systemd/system/docker.service; enabled; preset: enabled)
+     Active: active (running) since Sun 2026-01-04 14:14:20 UTC; 2min 16s ago
+
+ubuntu@ip-10-0-1-212:~$ docker run hello-world
+docker: permission denied while trying to connect to the Docker daemon socket at unix:///var/run/docker.sock: Head "http://%2Fvar%2Frun%2Fdocker.sock/_ping": dial unix /var/run/docker.sock: connect: permission denied
+
+Run 'docker run --help' for more information
+ubuntu@ip-10-0-1-212:~$
+
+ubuntu@ip-10-0-1-212:~$ sudo usermod -aG docker ubuntu
+
+ubuntu@ip-10-0-1-212:~$ docker run hello-world
+Unable to find image 'hello-world:latest' locally
+latest: Pulling from library/hello-world
+17eec7bbc9d7: Pull complete
+Digest: sha256:d4aaab6242e0cace87e2ec17a2ed3d779d18fbfd03042ea58f2995626396a274
+Status: Downloaded newer image for hello-world:latest
+
+Hello from Docker!
+This message shows that your installation appears to be working correctly.
+
+To generate this message, Docker took the following steps:
+ 1. The Docker client contacted the Docker daemon.
+ 2. The Docker daemon pulled the "hello-world" image from the Docker Hub.
+    (amd64)
+ 3. The Docker daemon created a new container from that image which runs the
+    executable that produces the output you are currently reading.
+ 4. The Docker daemon streamed that output to the Docker client, which sent it
+    to your terminal.
+
+To try something more ambitious, you can run an Ubuntu container with:
+ $ docker run -it ubuntu bash
+
+Share images, automate workflows, and more with a free Docker ID:
+ https://hub.docker.com/
+
+For more examples and ideas, visit:
+ https://docs.docker.com/get-started/
+
+ubuntu@ip-10-0-1-212:~$
+
+
+ubuntu@ip-10-0-1-212:~$ git clone https://github.com/Titir250/Docker-Zero-to-Hero.git
+Cloning into 'Docker-Zero-to-Hero'...
+remote: Enumerating objects: 150, done.
+remote: Counting objects: 100% (3/3), done.
+remote: Compressing objects: 100% (2/2), done.
+remote: Total 150 (delta 0), reused 0 (delta 0), pack-reused 147 (from 1)
+Receiving objects: 100% (150/150), 40.48 KiB | 4.05 MiB/s, done.
+Resolving deltas: 100% (31/31), done.
+ubuntu@ip-10-0-1-212:~$ ls
+Docker-Zero-to-Hero
+ubuntu@ip-10-0-1-212:~$
+
+ubuntu@ip-10-0-1-212:~/Docker-Zero-to-Hero/examples/first-docker-file$ ls
+Dockerfile  app.py
+ubuntu@ip-10-0-1-212:~/Docker-Zero-to-Hero/examples/first-docker-file$ cat app.py
+print("Hello World")
+ubuntu@ip-10-0-1-212:~/Docker-Zero-to-Hero/examples/first-docker-file$ cat Dockerfile
+FROM ubuntu:latest
+
+# Set the working directory in the image
+WORKDIR /app
+
+# Copy the files from the host file system to the image file system
+COPY . /app
+
+# Install the necessary packages
+RUN apt-get update && apt-get install -y python3 python3-pip
+
+# Set environment variables
+ENV NAME World
+
+# Run a command to start the application
+CMD ["python3", "app.py"]
+ubuntu@ip-10-0-1-212:~/Docker-Zero-to-Hero/examples/first-docker-file$
+
+
+
