@@ -91,5 +91,75 @@ ENV NAME World
 CMD ["python3", "app.py"]
 ubuntu@ip-10-0-1-212:~/Docker-Zero-to-Hero/examples/first-docker-file$
 
+ubuntu@ip-10-0-1-212:~/Docker-Zero-to-Hero/examples/first-docker-file$ docker login
+
+USING WEB-BASED LOGIN
+
+i Info → To sign in with credentials on the command line, use 'docker login -u <username>'
+
+
+Your one-time device confirmation code is: FNJM-PZQD
+Press ENTER to open your browser or submit your device code here: https://login.docker.com/activate
+
+Waiting for authentication in the browser…
+
+
+WARNING! Your credentials are stored unencrypted in '/home/ubuntu/.docker/config.json'.
+Configure a credential helper to remove this warning. See
+https://docs.docker.com/go/credential-store/
+
+Login Succeeded
+
+
+ubuntu@ip-10-0-1-212:~/Docker-Zero-to-Hero/examples/first-docker-file$ docker build -t titirroy/my-first-docker-image:latest .
+DEPRECATED: The legacy builder is deprecated and will be removed in a future release.
+            Install the buildx component to build images with BuildKit:
+            https://docs.docker.com/go/buildx/
+
+Sending build context to Docker daemon  3.072kB
+Step 1/6 : FROM ubuntu:latest
+\latest: Pulling from library/ubuntu
+20043066d3d5: Pulling fs layer
+20043066d3d5: Verifying Checksum
+20043066d3d5: Download complete
+20043066d3d5: Pull complete
+Digest: sha256:c35e29c9450151419d9448b0fd75374fec4fff364a27f176fb458d472dfc9e54
+Status: Downloaded newer image for ubuntu:latest
+ ---> c3a134f2ace4
+Step 2/6 : WORKDIR /app
+ ---> Running in 00e969afadbb
+ ---> Removed intermediate container 00e969afadbb
+ ---> 04ba163233d8
+Step 3/6 : COPY . /app
+ ---> e34d7fb7f53e
+Step 4/6 : RUN apt-get update && apt-get install -y python3 python3-pip
+ ---> Running in 2028ed319310
+
+Step 5/6 : ENV NAME World
+ ---> Running in aac3ab9e3c2d
+ ---> Removed intermediate container aac3ab9e3c2d
+ ---> b5ed72a6efdd
+Step 6/6 : CMD ["python3", "app.py"]
+ ---> Running in 6eb6ffdf32c3
+ ---> Removed intermediate container 6eb6ffdf32c3
+ ---> 428c17f9815a
+Successfully built 428c17f9815a
+Successfully tagged titirroy/my-first-docker-image:latest
+
+
+ubuntu@ip-10-0-1-212:~/Docker-Zero-to-Hero/examples/first-docker-file$ docker run -it titirroy/my-first-docker-image:latest
+Hello World
+ubuntu@ip-10-0-1-212:~/Docker-Zero-to-Hero/examples/first-docker-file$
+
+ubuntu@ip-10-0-1-212:~/Docker-Zero-to-Hero/examples/first-docker-file$ docker push titirroy/my-first-docker-image:latest
+The push refers to repository [docker.io/titirroy/my-first-docker-image]
+22788977c1d8: Pushed
+650090f62d86: Pushed
+1f6084b67312: Pushed
+e8bce0aabd68: Mounted from library/ubuntu
+latest: digest: sha256:9361fdf074b1fdd5065f668e2bc82eaee0845bb84f3a474d35119d522654308a size: 1155
+ubuntu@ip-10-0-1-212:~/Docker-Zero-to-Hero/examples/first-docker-file$
+
+
 
 
