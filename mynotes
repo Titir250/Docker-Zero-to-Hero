@@ -108,6 +108,37 @@ ubuntu@ip-10-0-1-210:~$ docker inspect f8bf458dc0bd
                 "Propagation": ""
             }
 
+ubuntu@ip-10-0-1-210:~$ docker volume create titir
+titir
+ubuntu@ip-10-0-1-210:~$ docker run -d --mount source=titir,target=/app nginx:latest
+Unable to find image 'nginx:latest' locally
+latest: Pulling from library/nginx
+02d7611c4eae: Pull complete
+dcea87ab9c4a: Pull complete
+35df28ad1026: Pull complete
+99ae2d6d05ef: Pull complete
+a2b008488679: Pull complete
+d03ca78f31fe: Pull complete
+d6799cf0ce70: Pull complete
+Digest: sha256:ca871a86d45a3ec6864dc45f014b11fe626145569ef0e74deaffc95a3b15b430
+Status: Downloaded newer image for nginx:latest
+f8bf458dc0bd7197520338a1c55f8f90476bcaa15cc3ea9e60ff540f9088e0b7
+ubuntu@ip-10-0-1-210:~$ docker ps
+CONTAINER ID   IMAGE          COMMAND                  CREATED          STATUS          PORTS     NAMES
+f8bf458dc0bd   nginx:latest   "/docker-entrypoint.…"   29 seconds ago   Up 28 seconds   80/tcp    gallant_cori
+ubuntu@ip-10-0-1-210:~$ docker inspect
+^C
+ubuntu@ip-10-0-1-210:~$ ^C
+ubuntu@ip-10-0-1-210:~$ docker inspect f8bf458dc0bd
+[
+    {
+        "Id": "f8bf458dc0bd7197520338a1c55f8f90476bcaa15cc3ea9e60ff540f9088e0b7",
+        "Created": "2026-01-07T14:13:05.71632397Z",
+        "Path": "/docker-entrypoint.sh",
+        "Args": [
+            "nginx",
+            "-g",
+            "daemon off;"
 
 
 
