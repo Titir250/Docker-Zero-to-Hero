@@ -1,6 +1,115 @@
 https://app.pluralsight.com/hands-on/labs/c3533baf-25a2-4bd1-9461-565bfdf0e161?originUrl=https%3A%2F%2Fapp.pluralsight.com%2Fsearch%2Fbrowse
 
 
+ubuntu@ip-10-0-1-210:~$ docker volume create titir
+titir
+ubuntu@ip-10-0-1-210:~$ docker volume create ls
+ls
+ubuntu@ip-10-0-1-210:~$ docker volume ls
+DRIVER    VOLUME NAME
+local     ls
+local     titir
+ubuntu@ip-10-0-1-210:~$ docker volume inspect titir
+[
+    {
+        "CreatedAt": "2026-01-07T14:02:07Z",
+        "Driver": "local",
+        "Labels": null,
+        "Mountpoint": "/var/lib/docker/volumes/titir/_data",
+        "Name": "titir",
+        "Options": null,
+        "Scope": "local"
+    }
+]
+ubuntu@ip-10-0-1-210:~$
+
+
+ubuntu@ip-10-0-1-210:~$ docker volume rm ls
+ls
+ubuntu@ip-10-0-1-210:~$ docker volume ls
+DRIVER    VOLUME NAME
+local     titir
+ubuntu@ip-10-0-1-210:~$
+
+
+abhisekh
+ubuntu@ip-10-0-1-210:~$ docker volume ls
+DRIVER    VOLUME NAME
+local     abhisekh
+local     titir
+ubuntu@ip-10-0-1-210:~$ docker volume rm abhisekh titir
+abhisekh
+titir
+ubuntu@ip-10-0-1-210:~$ docker volume ls
+DRIVER    VOLUME NAME
+ubuntu@ip-10-0-1-210:~$
+
+
+ubuntu@ip-10-0-1-210:~$ docker build -t volumedemo .
+DEPRECATED: The legacy builder is deprecated and will be removed in a future release.
+            Install the buildx component to build images with BuildKit:
+            https://docs.docker.com/go/buildx/
+
+Sending build context to Docker daemon  13.82kB
+Step 1/6 : FROM ubuntu:latest
+ ---> c3a134f2ace4
+Step 2/6 : WORKDIR /app
+ ---> Running in df1fac4508dd
+ ---> Removed intermediate container df1fac4508dd
+ ---> f7ab9b50a45f
+Step 3/6 : COPY . /app
+
+
+ubuntu@ip-10-0-1-210:~$ docker volume create titir
+titir
+ubuntu@ip-10-0-1-210:~$ docker run -d --mount source=titir,target=/app nginx:latest
+Unable to find image 'nginx:latest' locally
+latest: Pulling from library/nginx
+02d7611c4eae: Pull complete
+dcea87ab9c4a: Pull complete
+35df28ad1026: Pull complete
+99ae2d6d05ef: Pull complete
+a2b008488679: Pull complete
+d03ca78f31fe: Pull complete
+d6799cf0ce70: Pull complete
+Digest: sha256:ca871a86d45a3ec6864dc45f014b11fe626145569ef0e74deaffc95a3b15b430
+Status: Downloaded newer image for nginx:latest
+f8bf458dc0bd7197520338a1c55f8f90476bcaa15cc3ea9e60ff540f9088e0b7
+ubuntu@ip-10-0-1-210:~$
+
+ubuntu@ip-10-0-1-210:~$ docker ps
+CONTAINER ID   IMAGE          COMMAND                  CREATED          STATUS          PORTS     NAMES
+f8bf458dc0bd   nginx:latest   "/docker-entrypoint.…"   29 seconds ago   Up 28 seconds   80/tcp    gallant_cori
+ubuntu@ip-10-0-1-210:~$ docker inspect
+^C
+ubuntu@ip-10-0-1-210:~$ ^C
+ubuntu@ip-10-0-1-210:~$ docker inspect f8bf458dc0bd
+[
+    {
+        "Id": "f8bf458dc0bd7197520338a1c55f8f90476bcaa15cc3ea9e60ff540f9088e0b7",
+        "Created": "2026-01-07T14:13:05.71632397Z",
+        "Path": "/docker-entrypoint.sh",
+        "Args": [
+            "nginx",
+            "-g",
+            "daemon off;"
+        ],
+.........
+
+"Mounts": [
+            {
+                "Type": "volume",
+                "Name": "titir",
+                "Source": "/var/lib/docker/volumes/titir/_data",
+                "Destination": "/app",
+                "Driver": "local",
+                "Mode": "z",
+                "RW": true,
+                "Propagation": ""
+            }
+
+
+
 
 
 
