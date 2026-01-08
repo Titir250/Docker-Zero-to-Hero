@@ -238,6 +238,40 @@ PING 172.17.0.3 (172.17.0.3) 56(84) bytes of data.
 5 packets transmitted, 5 received, 0% packet loss, time 4131ms
 rtt min/avg/max/mdev = 0.039/0.041/0.046/0.002 ms
 
+create host-network
+
+
+ubuntu@ip-10-0-2-242:~$ docker run -d --name host-demo --network=host nginx:latest
+b08ffb604abdbc3b02b7c667ab8236d0eed45366ed3f78a3f0c5cd4fbe32bd44
+ubuntu@ip-10-0-2-242:~$ docker ps
+CONTAINER ID   IMAGE          COMMAND                  CREATED          STATUS          PORTS     NAMES
+b08ffb604abd   nginx:latest   "/docker-entrypoint.…"   4 seconds ago    Up 3 seconds              host-demo
+9ab855472448   nginx:latest   "/docker-entrypoint.…"   11 minutes ago   Up 11 minutes   80/tcp    finance
+e237ea7ffa75   nginx:latest   "/docker-entrypoint.…"   23 minutes ago   Up 23 minutes   80/tcp    logout
+837559146a43   nginx:latest   "/docker-entrypoint.…"   27 minutes ago   Up 27 minutes   80/tcp    login
+
+
+ubuntu@ip-10-0-2-242:~$ docker inspect host-demo
+
+
+"Networks": {
+                "host": {
+                    "IPAMConfig": null,
+                    "Links": null,
+                    "Aliases": null,
+                    "MacAddress": "",
+                    "DriverOpts": null,
+                    "GwPriority": 0,
+                    "NetworkID": "003088b9e5f8273ebc6352abec38f7a83fc22f9560560599efebe0cc24284028",
+                    "EndpointID": "bde639df59cc7ac5eee55f2ace68e6f1d38cfd77c99229ee941525f572c34bc6",
+                    "Gateway": "",
+                    "IPAddress": "",
+                    "IPPrefixLen": 0,
+                    "IPv6Gateway": "",
+                    "GlobalIPv6Address": "",
+                    "GlobalIPv6PrefixLen": 0,
+                    "DNSNames": null
+
 
 
 
