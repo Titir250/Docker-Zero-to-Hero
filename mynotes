@@ -1,5 +1,6 @@
 https://app.pluralsight.com/hands-on/labs/c3533baf-25a2-4bd1-9461-565bfdf0e161?originUrl=https%3A%2F%2Fapp.pluralsight.com%2Fsearch%2Fbrowse
 
+create login container
 
 ubuntu@ip-10-0-2-242:~$ docker run -d --name login nginx:latest
 Unable to find image 'nginx:latest' locally
@@ -25,6 +26,217 @@ Get:6 http://deb.debian.org/debian-security trixie-security/main amd64 Packages 
 Fetched 10.0 MB in 1s (8391 kB/s)
 All packages are up to date.
 root@837559146a43:/#
+
+install ping util in login container
+
+root@837559146a43:/# apt update
+Get:1 http://deb.debian.org/debian trixie InRelease [140 kB]
+Get:2 http://deb.debian.org/debian trixie-updates InRelease [47.3 kB]
+Get:3 http://deb.debian.org/debian-security trixie-security InRelease [43.4 kB]
+Get:4 http://deb.debian.org/debian trixie/main amd64 Packages [9670 kB]
+Get:5 http://deb.debian.org/debian trixie-updates/main amd64 Packages [5412 B]
+Get:6 http://deb.debian.org/debian-security trixie-security/main amd64 Packages [94.5 kB]
+Fetched 10.0 MB in 1s (8391 kB/s)
+All packages are up to date.
+'
+
+
+root@837559146a43:/# apt-get install iputils-ping -y
+Reading package lists... Done
+Building dependency tree... Done
+Reading state information... Done
+The following additional packages will be installed:
+  linux-sysctl-defaults
+The following NEW packages will be installed:
+  iputils-ping linux-sysctl-defaults
+0 upgraded, 2 newly installed, 0 to remove and 0 not upgraded.
+Need to get 56.9 kB of archives.
+After this operation, 211 kB of additional disk space will be used.
+Get:1 http://deb.debian.org/debian trixie/main amd64 iputils-ping amd64 3:20240905-3 [51.2 kB]
+Get:2 http://deb.debian.org/debian trixie/main amd64 linux-sysctl-defaults all 4.12 [5624 B]
+Fetched 56.9 kB in 0s (2869 kB/s)
+debconf: unable to initialize frontend: Dialog
+debconf: (No usable dialog-like program is installed, so the dialog based frontend cannot be used. at /usr/share/perl5/Debconf/FrontEnd/Dialog.pm line 79, <STDIN> line 2.)
+debconf: falling back to frontend: Readline
+debconf: unable to initialize frontend: Readline
+debconf: (Can't locate Term/ReadLine.pm in @INC (you may need to install the Term::ReadLine module) (@INC entries checked: /etc/perl /usr/local/lib/x86_64-linux-gnu/perl/5.40.1 /usr/local/share/perl/5.40.1 /usr/lib/x86_64-linux-gnu/perl5/5.40 /usr/share/perl5 /usr/lib/x86_64-linux-gnu/perl-base /usr/lib/x86_64-linux-gnu/perl/5.40 /usr/share/perl/5.40 /usr/local/lib/site_perl) at /usr/share/perl5/Debconf/FrontEnd/Readline.pm line 8, <STDIN> line 2.)
+debconf: falling back to frontend: Teletype
+Selecting previously unselected package iputils-ping.
+(Reading database ... 6699 files and directories currently installed.)
+Preparing to unpack .../iputils-ping_3%3a20240905-3_amd64.deb ...
+Unpacking iputils-ping (3:20240905-3) ...
+Selecting previously unselected package linux-sysctl-defaults.
+Preparing to unpack .../linux-sysctl-defaults_4.12_all.deb ...
+Unpacking linux-sysctl-defaults (4.12) ...
+Setting up linux-sysctl-defaults (4.12) ...
+Setting up iputils-ping (3:20240905-3) ...
+root@837559146a43:/#
+
+root@837559146a43:/# ping -V
+ping from iputils 20240905
+libcap: yes, IDN: yes, NLS: no, error.h: yes, getrandom(): yes, __fpending(): yes
+root@837559146a43:/#
+
+create logout container
+
+ubuntu@ip-10-0-2-242:~$ docker run -d --name logout nginx:latest
+
+
+
+ubuntu@ip-10-0-2-242:~$ docker ps
+CONTAINER ID   IMAGE          COMMAND                  CREATED          STATUS          PORTS     NAMES
+e237ea7ffa75   nginx:latest   "/docker-entrypoint.…"   18 seconds ago   Up 17 seconds   80/tcp    logout
+837559146a43   nginx:latest   "/docker-entrypoint.…"   4 minutes ago    Up 4 minutes    80/tcp    login
+
+
+
+
+Get the ip of the logout container
+
+ubuntu@ip-10-0-2-242:~$ docker inspect e237ea7ffa75 | grep IPAddress
+            "SecondaryIPAddresses": null,
+            "IPAddress": "172.17.0.3",
+                    "IPAddress": "172.17.0.3",
+
+
+ping logout from inside login container
+
+ubuntu@ip-10-0-2-242:~$ docker exec -it login /bin/bash
+root@837559146a43:/# ping 172.17.0.3
+PING 172.17.0.3 (172.17.0.3) 56(84) bytes of data.
+64 bytes from 172.17.0.3: icmp_seq=1 ttl=64 time=0.054 ms
+64 bytes from 172.17.0.3: icmp_seq=2 ttl=64 time=0.039 ms
+64 bytes from 172.17.0.3: icmp_seq=3 ttl=64 time=0.045 ms
+64 bytes from 172.17.0.3: icmp_seq=4 ttl=64 time=0.043 ms
+64 bytes from 172.17.0.3: icmp_seq=5 ttl=64 time=0.045 ms
+64 bytes from 172.17.0.3: icmp_seq=6 ttl=64 time=0.045 ms
+^C
+--- 172.17.0.3 ping statistics ---
+6 packets transmitted, 6 received, 0% packet loss, time 5144ms
+
+out of the box networks available
+
+ubuntu@ip-10-0-2-242:~$ docker network ls
+NETWORK ID     NAME      DRIVER    SCOPE
+c51e326ecb3d   bridge    bridge    local
+003088b9e5f8   host      host      local
+67016332d125   none      null      local
+ubuntu@ip-10-0-2-242:~$
+
+create a custom bridge network
+
+ubuntu@ip-10-0-2-242:~$ docker network create secure-network
+04168d6f1d414de19246270b4541167a1836e02c018f9bf2600197d43b8dcc64
+ubuntu@ip-10-0-2-242:~$ docker network ls
+NETWORK ID     NAME             DRIVER    SCOPE
+c51e326ecb3d   bridge           bridge    local
+003088b9e5f8   host             host      local
+67016332d125   none             null      local
+04168d6f1d41   secure-network   bridge    local
+ubuntu@ip-10-0-2-242:~$
+
+create finance container
+
+ubuntu@ip-10-0-2-242:~$ docker run -d --name finance --network=secure-network nginx:latest
+9ab855472448b9efc0d366963e4ab34e3f0ea023255842688d7970d44b375cc7
+ubuntu@ip-10-0-2-242:~$ docker ps
+CONTAINER ID   IMAGE          COMMAND                  CREATED          STATUS          PORTS     NAMES
+9ab855472448   nginx:latest   "/docker-entrypoint.…"   12 seconds ago   Up 12 seconds   80/tcp    finance
+e237ea7ffa75   nginx:latest   "/docker-entrypoint.…"   11 minutes ago   Up 11 minutes   80/tcp    logout
+837559146a43   nginx:latest   "/docker-entrypoint.…"   15 minutes ago   Up 15 minutes   80/tcp    login
+ubuntu@ip-10-0-2-242:~$
+
+ubuntu@ip-10-0-2-242:~$ docker inspect login
+
+"Networks": {
+                "bridge": {
+                    "IPAMConfig": null,
+                    "Links": null,
+                    "Aliases": null,
+                    "MacAddress": "46:9f:8e:fb:18:79",
+                    "DriverOpts": null,
+                    "GwPriority": 0,
+                    "NetworkID": "c51e326ecb3d5e402bf53ece2ea09a4e9b9d470e0c25798b5acd6fd13eb8c7d7",
+                    "EndpointID": "1591b465ddb14a98a597b99a27a8295b30a2d5ebd6cff927b33ccc9b9ee799c7",
+                    "Gateway": "172.17.0.1",
+                    "IPAddress": "172.17.0.2",
+                    "IPPrefixLen": 16,
+                    "IPv6Gateway": "",
+                    "GlobalIPv6Address": "",
+                    "GlobalIPv6PrefixLen": 0,
+                    "DNSNames": null
+
+
+
+
+ docker inspect logout
+
+ "Networks": {
+                "bridge": {
+                    "IPAMConfig": null,
+                    "Links": null,
+                    "Aliases": null,
+                    "MacAddress": "32:92:9c:c5:a5:f9",
+                    "DriverOpts": null,
+                    "GwPriority": 0,
+                    "NetworkID": "c51e326ecb3d5e402bf53ece2ea09a4e9b9d470e0c25798b5acd6fd13eb8c7d7",
+                    "EndpointID": "9980b28804b8d47389310336016bb4efdd9c423aea4b148cd1ad9337c53c60cc",
+                    "Gateway": "172.17.0.1",
+                    "IPAddress": "172.17.0.3",
+                    "IPPrefixLen": 16,
+                    "IPv6Gateway": "",
+                    "GlobalIPv6Address": "",
+                    "GlobalIPv6PrefixLen": 0,
+                    "DNSNames": null
+
+
+ docker inspect finance
+
+"secure-network": {
+                    "IPAMConfig": null,
+                    "Links": null,
+                    "Aliases": null,
+                    "MacAddress": "be:6d:02:2c:42:d1",
+                    "DriverOpts": null,
+                    "GwPriority": 0,
+                    "NetworkID": "04168d6f1d414de19246270b4541167a1836e02c018f9bf2600197d43b8dcc64",
+                    "EndpointID": "687b7a1b9a1a000834441788af5aca3fbdba5083e111826223b388aa75b5debe",
+                    "Gateway": "172.18.0.1",
+                    "IPAddress": "172.18.0.2",
+                    "IPPrefixLen": 16,
+                    "IPv6Gateway": "",
+                    "GlobalIPv6Address": "",
+                    "GlobalIPv6PrefixLen": 0,
+                    "DNSNames": [
+                        "finance",
+                        "9ab855472448"
+
+
+try to ping finance container from login container
+
+not working
+
+root@837559146a43:/# ping 172.18.0.2
+PING 172.18.0.2 (172.18.0.2) 56(84) bytes of data.
+^C
+--- 172.18.0.2 ping statistics ---
+45 packets transmitted, 0 received, 100% packet loss, time 45095ms
+
+root@837559146a43:/# ^C
+
+ping to login container working
+
+root@837559146a43:/# ping 172.17.0.3
+PING 172.17.0.3 (172.17.0.3) 56(84) bytes of data.
+64 bytes from 172.17.0.3: icmp_seq=1 ttl=64 time=0.040 ms
+64 bytes from 172.17.0.3: icmp_seq=2 ttl=64 time=0.040 ms
+64 bytes from 172.17.0.3: icmp_seq=3 ttl=64 time=0.039 ms
+64 bytes from 172.17.0.3: icmp_seq=4 ttl=64 time=0.046 ms
+64 bytes from 172.17.0.3: icmp_seq=5 ttl=64 time=0.040 ms
+^C
+--- 172.17.0.3 ping statistics ---
+5 packets transmitted, 5 received, 0% packet loss, time 4131ms
+rtt min/avg/max/mdev = 0.039/0.041/0.046/0.002 ms
 
 
 
