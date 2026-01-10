@@ -1,5 +1,19 @@
 https://app.pluralsight.com/hands-on/labs/c3533baf-25a2-4bd1-9461-565bfdf0e161?originUrl=https%3A%2F%2Fapp.pluralsight.com%2Fsearch%2Fbrowse
 
+root@ip-10-0-1-237:~/awesome-compose# cd nginx-nodejs-redis
+root@ip-10-0-1-237:~/awesome-compose/nginx-nodejs-redis# docker-compose down
+Stopping nginx-nodejs-redis_nginx_1 ... done
+Stopping nginx-nodejs-redis_web1_1  ... done
+Stopping nginx-nodejs-redis_redis_1 ... done
+Stopping nginx-nodejs-redis_web2_1  ... done
+Removing nginx-nodejs-redis_nginx_1 ... done
+Removing nginx-nodejs-redis_web1_1  ... done
+Removing nginx-nodejs-redis_redis_1 ... done
+Removing nginx-nodejs-redis_web2_1  ... done
+Removing network nginx-nodejs-redis_default
+root@ip-10-0-1-237:~/awesome-compose/nginx-nodejs-redis#
+
+
 
 
 
