@@ -39,12 +39,12 @@ Building dependency tree... Done
 Reading state information... Done
 
 
-ubuntu@ip-10-0-2-176:~/python-for-devops/simple-python-app$ docker compose version
-docker: unknown command: docker compose
+Try: sudo apt install <deb name>
+ubuntu@ip-10-0-2-176:~/python-for-devops/simple-python-app$ docker init
+docker: unknown command: docker init
 
 Run 'docker --help' for more information
-
-
+ubuntu@ip-10-0-2-176:~/python-for-devops/simple-python-app$ 
 
 
 
