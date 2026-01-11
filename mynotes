@@ -39,12 +39,19 @@ Building dependency tree... Done
 Reading state information... Done
 
 
-Try: sudo apt install <deb name>
-ubuntu@ip-10-0-2-176:~/python-for-devops/simple-python-app$ docker init
-docker: unknown command: docker init
+sudo apt remove -y docker docker.io docker-engine containerd runc
+sudo apt update
+sudo apt install -y ca-certificates curl gnupg
+sudo install -m 0755 -d /etc/apt/keyrings
+curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo gpg --dearmor -o /etc/apt/keyrings/docker.gpg
+echo \
+"deb [arch=$(dpkg --print-architecture) signed-by=/etc/apt/keyrings/docker.gpg] \
+https://download.docker.com/linux/ubuntu \
+$(lsb_release -cs) stable" | \
+sudo tee /etc/apt/sources.list.d/docker.list > /dev/null
 
-Run 'docker --help' for more information
-ubuntu@ip-10-0-2-176:~/python-for-devops/simple-python-app$ 
+sudo systemctl restart docker
+docker version
 
 
 
