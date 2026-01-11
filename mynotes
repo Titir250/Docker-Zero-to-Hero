@@ -39,6 +39,12 @@ Building dependency tree... Done
 Reading state information... Done
 
 
+ubuntu@ip-10-0-2-176:~/python-for-devops/simple-python-app$ docker compose version
+docker: unknown command: docker compose
+
+Run 'docker --help' for more information
+
+
 
 
 
